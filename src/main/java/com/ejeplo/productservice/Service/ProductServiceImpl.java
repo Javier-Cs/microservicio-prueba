@@ -43,12 +43,12 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public boolean deleteByIdPro(Long id) {
-        if (productRepository.existsById(id)) {
-            productRepository.deleteById(id);
-            return true;
+        // si no existe, enviamos el estado correspondiente
+        if(!productRepository.existsById(id)){
+            throw new ResourceNotFoundException("No se encontro el id del producto"+id);
         }
-        // si no encuentra el id
-        return false;
+        productRepository.deleteById(id);
+        return true;
     }
 
     @Override
