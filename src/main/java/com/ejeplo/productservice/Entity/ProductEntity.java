@@ -29,4 +29,14 @@ public class ProductEntity {
     @NotNull(message = "El precio no puede ser nulo")
     private Double priceProduct;
 
+
+//    create database productservice_db;
+//    use productservice_db
+//    create table product_tbl(
+//            id_producto int primary key identity(1,1) not null,
+//    name_produ nvarchar(30) not null,
+//    descrip_produ nvarchar(200) not null,
+//    price_produ numeric(18,2)
+//    );
+
 }
