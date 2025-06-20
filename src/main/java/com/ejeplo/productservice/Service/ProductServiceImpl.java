@@ -57,13 +57,13 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findById(productUpEntity.getIdProduct())
                         .map(ProductExist -> {
                             if(productUpEntity.getNameProduct() != null ){
-                                productUpEntity.setNameProduct(productUpEntity.getNameProduct());
+                                ProductExist.setNameProduct(productUpEntity.getNameProduct());
                             }
                             if(productUpEntity.getDescriptionProduct() != null ){
-                                productUpEntity.setDescriptionProduct(productUpEntity.getDescriptionProduct());
+                                ProductExist.setDescriptionProduct(productUpEntity.getDescriptionProduct());
                             }
                             if (productUpEntity.getPriceProduct() != null){
-                                productUpEntity.setPriceProduct(productUpEntity.getPriceProduct());
+                                ProductExist.setPriceProduct(productUpEntity.getPriceProduct());
                             }
                             return productRepository.save(ProductExist);
                         }

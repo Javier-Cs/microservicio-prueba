@@ -3,6 +3,7 @@ package com.ejeplo.productservice.Controller;
 import com.ejeplo.productservice.Entity.ProductEntity;
 import com.ejeplo.productservice.Exception.ResourceNotFoundException;
 import com.ejeplo.productservice.Service.ProductService;
+import com.ejeplo.productservice.Service.ProductServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,57 +12,72 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/ApiProdu/v1/")
+@RequestMapping("api/v1")
 public class ProductController {
 
-    final ProductService productService;
+    final ProductServiceImpl productServiceImpl;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductServiceImpl productServiceImpl) {
+        this.productServiceImpl = productServiceImpl;
     }
+
 
     @GetMapping("/getAll")
     public ResponseEntity<List<ProductEntity>> getAll(){
-        List<ProductEntity> products = productService.findAll();
-        if(products == null || products.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return  new ResponseEntity<>(products, HttpStatus.OK);
+        List<ProductEntity> products = productServiceImpl.findAll();
+        return ResponseEntity.ok(products);
+
+//        List<ProductEntity> products = productServiceImpl.findAll();
+//        if(products == null || products.isEmpty()){
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return  new ResponseEntity<>(products, HttpStatus.OK);
     }
 
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<Optional<ProductEntity>> getById(@PathVariable("id") Long id){
-        Optional<ProductEntity> product = productService.findById(id);
-        if(product.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return  ResponseEntity.status(HttpStatus.OK).body(product);
-        //new ResponseEntity<>(product, HttpStatus.OK);
+    public ResponseEntity<ProductEntity> getById(@PathVariable("id") Long id){
+        return productServiceImpl.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet( () -> ResponseEntity.notFound().build());
+
+//        Optional<ProductEntity> product = productServiceImpl.findById(id);
+//        if(product.isEmpty()){
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        return  ResponseEntity.status(HttpStatus.OK).body(product);
+//        //new ResponseEntity<>(product, HttpStatus.OK);
     }
 
 
     @PostMapping("/save")
     public ResponseEntity<ProductEntity> save(@RequestBody ProductEntity product){
-        try{
-            ProductEntity producto = productService.saveProduct(product);
-            return ResponseEntity.status(HttpStatus.CREATED).body(producto);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ProductEntity producto = productServiceImpl.saveProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(producto);
+
+//        try{
+//            ProductEntity producto = productServiceImpl.saveProduct(product);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(producto);
+//        }catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
 
     }
 
 
-    @DeleteMapping("/Delet/{id}")
+    @DeleteMapping("/deletedById/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id){
         try{
-            boolean result = productService.deleteByIdPro(id);
-            if(result){
-               return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+            //boolean result = productServiceImpl.deleteByIdPro(id);
+//            if(result){
+//               return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//            }else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//            }
+            productServiceImpl.deleteByIdPro(id);
+            return ResponseEntity.noContent().build();
+        }catch (ResourceNotFoundException e){
+            return ResponseEntity.notFound().build();
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -69,16 +85,19 @@ public class ProductController {
 
 
 
-    @PutMapping("put/{id}")
-    public ResponseEntity<ProductEntity> put (@PathVariable("id") Long id, @RequestBody ProductEntity productDetails){
-        if (productDetails.getIdProduct() == null || !productDetails.getIdProduct().equals(id)){
-            productDetails.setIdProduct(id);
-        }
+    @PutMapping("/putProdu/{id}")
+    public ResponseEntity<ProductEntity> putproduct (@PathVariable("id") Long id, @RequestBody ProductEntity productDetails){
+//        if (productDetails.getIdProduct() == null || !productDetails.getIdProduct().equals(id)){
+//            productDetails.setIdProduct(id);
+//        }
+        productDetails.setIdProduct(id);
         try{
-            ProductEntity updatedProduct = productService.updateProduct(productDetails);
+            ProductEntity updatedProduct = productServiceImpl.updateProduct(productDetails);
             return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
-        }catch (ResourceNotFoundException ex){
+        }catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

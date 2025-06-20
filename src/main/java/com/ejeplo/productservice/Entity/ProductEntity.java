@@ -12,9 +12,7 @@ public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "id_producto")
-    @NotNull(message = "El ID no puede ser nulo")
     private Long idProduct;
 
     @Column(name = "name_produ")
