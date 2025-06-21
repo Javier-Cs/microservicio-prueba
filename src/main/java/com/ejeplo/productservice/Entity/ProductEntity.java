@@ -19,6 +19,8 @@ public class ProductEntity {
     @NotBlank(message = "El nombre es obligatorio")
     private String nameProduct;
 
+
+
     @Column(name = "descrip_produ")
     @NotNull(message = "El descripcion no puede ser nulo")
     private String descriptionProduct;
@@ -26,6 +28,10 @@ public class ProductEntity {
     @Column(name = "price_produ")
     @NotNull(message = "El precio no puede ser nulo")
     private Double priceProduct;
+
+    private String distribuidor;
+    private String codeProducto;
+    private Double priceDistribuidor;
 
 
 //    create database productservice_db;
@@ -35,6 +41,10 @@ public class ProductEntity {
 //    name_produ nvarchar(30) not null,
 //    descrip_produ nvarchar(200) not null,
 //    price_produ numeric(18,2)
+//    distribuidor_produ nvarchar(200) not null,
+//    code_produ nvarchar(200) not null,
+//    price_distribuidor_produ numeric(18,2)
+//
 //    );
 
 }
