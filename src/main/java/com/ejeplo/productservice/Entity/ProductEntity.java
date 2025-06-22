@@ -40,7 +40,7 @@ public class ProductEntity {
 //            id_producto int primary key identity(1,1) not null,
 //    name_produ nvarchar(30) not null,
 //    descrip_produ nvarchar(200) not null,
-//    price_produ numeric(18,2)
+//    price_produ numeric(18,2),
 //    distribuidor_produ nvarchar(200) not null,
 //    code_produ nvarchar(200) not null,
 //    price_distribuidor_produ numeric(18,2)
