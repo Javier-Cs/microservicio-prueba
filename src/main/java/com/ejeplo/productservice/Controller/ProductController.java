@@ -1,11 +1,14 @@
 package com.ejeplo.productservice.Controller;
 
 import com.ejeplo.productservice.DTOs.ProductDTO;
+import com.ejeplo.productservice.DTOs.ProductDTO_pu;
+import com.ejeplo.productservice.DTOs.ProductMapper;
 import com.ejeplo.productservice.Entity.ProductEntity;
 import com.ejeplo.productservice.Exception.ResourceNotFoundException;
 import com.ejeplo.productservice.Service.ProductService;
 import com.ejeplo.productservice.Service.ProductServiceImpl;
 import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +20,11 @@ import java.util.Optional;
 public class ProductController {
 
     final ProductServiceImpl productServiceImpl;
+    private final ProductMapper productMapper;
 
-    public ProductController(ProductServiceImpl productServiceImpl) {
+    public ProductController(ProductServiceImpl productServiceImpl, ProductMapper productMapper) {
         this.productServiceImpl = productServiceImpl;
+        this.productMapper = productMapper;
     }
 
     @GetMapping("/getAll")
@@ -35,6 +40,34 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+
+
+    @PostMapping("/save")
+    public ResponseEntity<ProductDTO_pu> save(@Valid @RequestBody ProductDTO_pu productDTO_pu){
+        ProductDTO_pu product = productServiceImpl.saveProduct(productDTO_pu);
+        return ResponseEntity.ok().body(product);
+    }
+
+
+    @PutMapping("/putProdu/{id}")
+    public ResponseEntity<ProductDTO_pu> update(@PathVariable("id") Long id, @Valid @RequestBody ProductDTO_pu productDTO_pu ){
+        ProductDTO_pu product = productServiceImpl.updateProduct(id, productDTO_pu);
+        return ResponseEntity.ok().body(product);
+    }
+
+
+    @DeleteMapping("/deletedById/{id}")
+    public ResponseEntity<ProductDTO_pu> delete(@PathVariable("id") Long id){
+        boolean deleted = productServiceImpl.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
+    
+    
+    
 
 
 
