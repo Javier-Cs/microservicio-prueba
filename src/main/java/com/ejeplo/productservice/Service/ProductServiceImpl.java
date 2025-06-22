@@ -2,6 +2,7 @@ package com.ejeplo.productservice.Service;
 
 import com.ejeplo.productservice.DTOs.ProductDTO;
 import com.ejeplo.productservice.DTOs.ProductMapper;
+import com.ejeplo.productservice.DTOs.ProductDTO_pu;
 import com.ejeplo.productservice.Entity.ProductEntity;
 import com.ejeplo.productservice.Exception.ResourceNotFoundException;
 import com.ejeplo.productservice.Repository.ProductRepository;
@@ -25,6 +26,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDTO> findAll() {
         List<ProductEntity> productEntities = productRepository.findAll();
 
@@ -34,6 +36,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ProductDTO> findById(Long id) {
         Optional<ProductEntity> productOpt = productRepository.findById(id);
         if(productOpt.isPresent()) {
@@ -44,27 +47,31 @@ public class ProductServiceImpl implements ProductService{
         //return productRepository.findById(id).map(productMapper::toPDTO);
     }
 
+
     @Override
-    public ProductDTO saveProduct(ProductDTO productDTO) {
-        return null;
+    public ProductDTO_pu saveProduct(ProductDTO_pu ProductDTO_pu) {
+        ProductEntity productEntity = productMapper.toEnt_P_U(ProductDTO_pu);
+        ProductEntity productEntitySaved = productRepository.save(productEntity);
+        return productMapper.toDTO_P_U(productEntitySaved);
     }
 
     @Override
     public boolean deleteById(Long id) {
-        return false;
+        if (!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("No se encontro el id del producto"+id);
+        }
+        productRepository.deleteById(id);
+        return true;
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO productDTO) {
-        return null;
+    public ProductDTO_pu updateProduct(Long id, ProductDTO_pu productPU_dto) {
+        ProductEntity existingProductEntity = productRepository.findById(id)
+                .orElseThrow( () -> new ResourceNotFoundException("Product not found with id " + id ));
+        productMapper.updateEntidadDeDTO_pu(productPU_dto, existingProductEntity);
+        ProductEntity productEntityUpdated = productRepository.save(existingProductEntity);
+        return productMapper.toDTO_P_U(productEntityUpdated);
     }
-
-
-    //    @Override
-//    @Transactional(readOnly = true)
-//    public Optional<ProductEntity> findById(Long id) {
-//        return productRepository.findById(id);
-//    }
 
 
 //    @Override
